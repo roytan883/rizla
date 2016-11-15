@@ -165,20 +165,22 @@ func Run(sources ...string) {
 						}
 
 						p.OnReload(filename)
+						
+						// go build first then kill
+						err := buildProject(p)
+						if err != nil {
+							p.Err.Dangerf(errBuild.Error())
+							continue
+						}
 
 						// kill previous running instance
-						err := killProcess(p.proc)
+						err = killProcess(p.proc)
 						if err != nil {
 							p.Err.Dangerf(err.Error())
 							continue
 						}
 
-						// go build
-						err = buildProject(p)
-						if err != nil {
-							p.Err.Dangerf(errBuild.Error())
-							continue
-						}
+						
 
 						// exec run the builded program
 						err = runProject(p)
@@ -259,12 +261,14 @@ func killProcess(proc *os.Process) (err error) {
 		return nil
 	}
 
+	/* roytan fix : this block linux kill process
 	if !isMac {
 		err = proc.Release()
 		if err != nil {
 			return nil // to prevent throw an error if the proc is not yet started correctly (= previous build error)
 		}
 	}
+	*/
 
 	if proc.Pid <= 0 {
 		return nil
