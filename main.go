@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/kataras/rizla/rizla"
+	"github.com/roytan883/rizla/rizla"
 )
 
 const (
